@@ -1,0 +1,119 @@
+# ==========================================================================
+#  Troll - everything below is configurable. Run /troll reload after editing.
+#  Text uses MiniMessage. Placeholders: %player%
+#
+#  Permission: troll.use  (default: nobody, not even OPs). Grant it with LuckPerms:
+#    /lp group owner permission set troll.use true
+#    /lp user YourName permission set troll.use true
+# ==========================================================================
+
+# The resource pack (TrollPack.zip) is what makes the jumpscare image and all the sounds work.
+# Upload TrollPack.zip somewhere that gives a DIRECT download link (see README), paste it here.
+resource-pack:
+  url: ""                                      # e.g. https://github.com/YOU/REPO/raw/main/TrollPack.zip
+  # SHA-1 of the TrollPack.zip that came with this plugin. If you change the zip, set this to ""
+  # and the plugin downloads it once at startup and works the hash out itself.
+  sha1: "b97e93d59a342e82a917a555a5eeba991825adde"
+  send-on-join: true                           # send the pack to everyone who joins
+  send-delay-ticks: 20
+  force: false                                 # true = players who decline get kicked. Test with false first!
+  prompt: "<gray>Server resources"
+
+jumpscare:
+  duration-ticks: 60                           # how long the image stays on screen
+  layers: 1                                    # play the sound this many times at once (the file is already at max volume)
+  volume: 1.0
+  pitch: 1.0
+  item: "PAPER"                                # the item briefly worn on the head to show the overlay
+
+disconnect:                                    # fake keyboard disconnect: they can't move until they rejoin
+  volume: 1.0
+
+resource:                                      # makes the client reload its resource packs over and over
+  times: 5
+  interval-ticks: 50
+  force: true
+
+reach:                                         # base reach is 3 for entities and 4.5 for blocks
+  entity-range: 1.0
+  block-range: 1.0                             # set to -1 to leave block reach alone
+
+ascend:
+  duration-seconds: 9.4                        # how long the climb takes (matches the song). 0 = use "amplifier" instead
+  amplifier: 15                                # levitation level, only used when duration-seconds is 0
+  ceiling-margin: 2                            # stop this many blocks below the height limit
+  max-seconds: 40                              # safety stop
+  safe-landing: true                           # slow falling when they reach the top so they don't die
+  slow-falling-seconds: 25
+  volume: 1.0
+
+menu:
+  picker-title: "<dark_gray>Troll: pick a player"
+  trolls-title: "<dark_gray>Troll %player%"
+  trolls:
+    jumpscare:
+      slot: 10
+      material: "WITHER_SKELETON_SKULL"
+      name: "<red><bold>Jumpscare"
+      description: ["<gray>Full screen scare + a very loud sound."]
+    disconnect:
+      slot: 11
+      material: "LEVER"
+      name: "<yellow><bold>Keyboard Disconnect"
+      description: ["<gray>Plays the disconnect sound and freezes them", "<gray>until they rejoin. Click again to undo."]
+    resource:
+      slot: 12
+      material: "PAINTING"
+      name: "<aqua><bold>Resource Reload"
+      description: ["<gray>Reloads their resource packs again and again."]
+    reach:
+      slot: 13
+      material: "STICK"
+      name: "<gold><bold>Tiny Reach"
+      description: ["<gray>Cuts their reach to 1 block. Click again to undo."]
+    ascend:
+      slot: 14
+      material: "FEATHER"
+      name: "<light_purple><bold>Ascend"
+      description: ["<gray>Floats them to the height limit", "<gray>while the ascending song plays."]
+  reset:
+    slot: 16
+    material: "MILK_BUCKET"
+    name: "<green><bold>Reset"
+    description: ["<gray>Clears every lingering troll on them."]
+  back:
+    slot: 22
+    material: "ARROW"
+    name: "<white>Back"
+  prev:
+    material: "ARROW"
+    name: "<white>Previous page"
+  next:
+    material: "ARROW"
+    name: "<white>Next page"
+  close:
+    material: "BARRIER"
+    name: "<red>Close"
+  player-lore: ["<gray>Click to open the troll menu"]
+
+messages:
+  prefix: "<dark_gray>[<red>Troll<dark_gray>] <gray>"
+  no-permission: "<red>Unknown command. Type \"/help\" for help."
+  players-only: "<red>Only players can open the menu."
+  reloaded: "<green>Config reloaded."
+  usage: "<gray>Usage: <white>/troll [player] [jumpscare|disconnect|resource|reach|ascend|reset]"
+  player-not-found: "<red>Player <white>%player%</white> isn't online."
+  immune: "<red><white>%player%</white> is immune to trolls."
+  warn-no-pack: "<yellow><white>%player%</white> hasn't loaded the resource pack, so they won't see or hear this."
+  pack-not-ready: "<red>The resource pack isn't set up yet. Put its direct link in <white>resource-pack.url</white> in the config."
+  already-scared: "<red><white>%player%</white> is already being jumpscared."
+  already-ascending: "<red><white>%player%</white> is already ascending."
+  ran-jumpscare: "<green>Jumpscared <white>%player%</white>."
+  ran-disconnect-on: "<green>Froze <white>%player%</white> (they stay frozen until they rejoin)."
+  ran-disconnect-off: "<green>Unfroze <white>%player%</white>."
+  ran-resource: "<green>Reloading <white>%player%</white>'s resource packs."
+  ran-reach-on: "<green><white>%player%</white> now has tiny reach."
+  ran-reach-off: "<green><white>%player%</white> has normal reach again."
+  ran-ascend: "<green><white>%player%</white> is ascending."
+  reset-done: "<green>Cleared every troll on <white>%player%</white>."
+  player-left: "<red>That player went offline."

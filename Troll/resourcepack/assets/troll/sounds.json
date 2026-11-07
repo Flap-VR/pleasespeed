@@ -1,0 +1,5 @@
+{
+  "jumpscare": { "sounds": [ { "name": "troll:jumpscare", "stream": false } ] },
+  "disconnect": { "sounds": [ { "name": "troll:disconnect", "stream": false } ] },
+  "ascending": { "sounds": [ { "name": "troll:ascending", "stream": true } ] }
+}
