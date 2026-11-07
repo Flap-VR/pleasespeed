@@ -1,4 +1,37 @@
-build:
+name: Build plugins
+ 
+on:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+ 
+permissions:
+  contents: write   # required for the release job
+ 
+jobs:
+  discover:
+    name: Find plugins
+    runs-on: ubuntu-24.04
+    outputs:
+      plugins: ${{ steps.find.outputs.plugins }}
+    steps:
+      - uses: actions/checkout@v5
+ 
+      - name: List folders containing a pom.xml
+        id: find
+        run: |
+          plugins=$(find . -maxdepth 3 -name pom.xml -not -path '*/target/*' -not -path './.git/*' -printf '%h\n' \
+            | sort | jq -R -s -c 'split("\n")[:-1] | map({path: ., name: (if . == "." then "plugin" else (sub("^\\./"; "") | gsub("/"; "-")) end)})')
+          echo "Found: $plugins"
+          if [ "$plugins" = "[]" ]; then
+            echo "::error::No pom.xml found. Commit your plugin folders (each with a pom.xml) to the repo."
+            exit 1
+          fi
+          echo "plugins=$plugins" >> "$GITHUB_OUTPUT"
+ 
+  build:
     name: Build ${{ matrix.name }}
     needs: discover
     runs-on: ubuntu-24.04
