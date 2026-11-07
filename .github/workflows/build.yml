@@ -1,0 +1,47 @@
+build:
+    name: Build ${{ matrix.name }}
+    needs: discover
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false          # one broken plugin won't stop the others
+      matrix:
+        include: ${{ fromJson(needs.discover.outputs.plugins) }}
+    steps:
+      - uses: actions/checkout@v5
+ 
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+ 
+      - name: Build
+        run: mvn -B -f "${{ matrix.path }}/pom.xml" clean package
+ 
+      - name: Upload jar
+        uses: actions/upload-artifact@v5
+        with:
+          name: ${{ matrix.name }}
+          path: |
+            ${{ matrix.path }}/target/*.jar
+            !${{ matrix.path }}/target/original-*.jar
+          if-no-files-found: error
+ 
+  release:
+    name: Publish release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download all plugin jars
+        uses: actions/download-artifact@v5
+        with:
+          path: artifacts
+ 
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*.jar
+          generate_release_notes: true
+ 
